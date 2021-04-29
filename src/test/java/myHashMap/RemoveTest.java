@@ -55,4 +55,22 @@ public class RemoveTest {
         map.get("Fish");
 
     }
+
+    @Test
+    public void removedKeyValuePairReturnsValueOfKey() {
+        MyHashMap<String, String> map = new MyHashMap<>();
+        map.put("Fish", "Nemo");
+        map.put("Lion", "Simba");
+        assertEquals("Nemo", map.remove("Fish"));
+    }
+
+    @Test
+    public void removedDuplicateKeyReturnsOverriddenValue() {
+        MyHashMap<String, String> map = new MyHashMap<>();
+        map.put("Fish", "Nemo");
+        map.put("Fish", "Dory");
+        assertEquals("Dory", map.remove("Fish"));
+    }
+
+
 }

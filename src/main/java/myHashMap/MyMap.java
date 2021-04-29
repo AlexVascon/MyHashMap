@@ -23,6 +23,6 @@ public interface MyMap<K, V> {
 
     V put(K key, V value);
 
-    void remove(Object key);
+    V remove(Object key);
 
 }

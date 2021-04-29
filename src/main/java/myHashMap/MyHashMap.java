@@ -10,16 +10,12 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     private MyNode<K,V>[] nodeList = new MyNode[15];
     private int size = 0;
     private int capacity;
-    private int duplicateCount;
 
     public MyHashMap() {
         int defaultMapIndex = nodeList.length;
         capacity = (int) (defaultMapIndex * 0.75);
     }
 
-    public int getDuplicateCount() {
-        return duplicateCount;
-    }
     @Override
     public boolean containsKey(Object key) {
         if(size == 0) {
@@ -144,7 +140,6 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         if(nodeList[index].getHashCode() == key.hashCode()) {
             if(nodeList[index].getKey().equals(key)) {
                 nodeList[index].setValue(value);
-                duplicateCount++;
                 return value;
             }
         }
@@ -153,7 +148,6 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
             listNodeAtIndex = listNodeAtIndex.getNext();
             if(listNodeAtIndex.getHashCode() == key.hashCode()) {
                 if(listNodeAtIndex.getKey().equals(key)) {
-                    duplicateCount++;
                     listNodeAtIndex.setValue(value);
                     return value;
                 }
@@ -165,7 +159,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     }
 
     @Override
-    public void remove(Object key) {
+    public V remove(Object key) {
        if(size == 0) {
            throw new IllegalStateException("List is empty");
        }
@@ -187,15 +181,17 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
            nodeAtIndex = nodeAtIndex.getNext();
        }
        if(previous == null) {
+           V valueOfRemovedKey = nodeList[index].getValue();
           MyNode<K,V> node = nodeList[index].getNext();
           nodeList[index] = node;
           size--;
-          return;
+          return valueOfRemovedKey;
        }
        MyNode<K,V> next = nodeAtIndex.getNext();
        previous.setNext(next);
        nodeAtIndex.setNext(null);
        size--;
+       return nodeAtIndex.getValue();
     }
 
     private int getIndex(long hashCode, int size) {
