@@ -232,6 +232,6 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     public void clear() {
         nodeList = new MyNode[nodeList.length];
         size = 0;
-        capacity = nodeList.length;
+        capacity = (int) (nodeList.length * 0.75);
     }
 }
