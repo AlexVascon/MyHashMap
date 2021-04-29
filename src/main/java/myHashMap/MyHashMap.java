@@ -10,12 +10,16 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     private MyNode<K,V>[] nodeList = new MyNode[15];
     private int size = 0;
     private int capacity;
+    private int duplicateCount;
 
     public MyHashMap() {
         int defaultMapIndex = nodeList.length;
         capacity = (int) (defaultMapIndex * 0.75);
     }
 
+    public int getDuplicateCount() {
+        return duplicateCount;
+    }
     @Override
     public boolean containsKey(Object key) {
         if(size == 0) {
@@ -119,7 +123,7 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
     }
 
     @Override
-    public void put(K key, V value) {
+    public V put(K key, V value) {
         if(size > capacity) {
             resize();
         }
@@ -132,27 +136,32 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         newNode.setHashCode(hashCode);
         newNode.setKey(key);
         newNode.setValue(value);
-
-        if (nodeList[index] != null) {
-            MyNode<K, V> listNodeAtIndex = nodeList[index];
-            if (listNodeAtIndex.getHashCode() == key.hashCode()) {
-                listNodeAtIndex.setValue(value);
-
-            } else {
-                while (listNodeAtIndex.getNext() != null) {
-                    if (listNodeAtIndex.getHashCode() == key.hashCode()) {
-                        listNodeAtIndex.setValue(value);
-                        return;
-                    }
-                    listNodeAtIndex = listNodeAtIndex.getNext();
-                }
-                listNodeAtIndex.setNext(newNode);
-                size++;
-            }
-        } else {
+        if(nodeList[index] == null) {
             nodeList[index] = newNode;
             size++;
+            return value;
         }
+        if(nodeList[index].getHashCode() == key.hashCode()) {
+            if(nodeList[index].getKey().equals(key)) {
+                nodeList[index].setValue(value);
+                duplicateCount++;
+                return value;
+            }
+        }
+        MyNode<K,V> listNodeAtIndex = nodeList[index];
+        while(listNodeAtIndex.getNext() != null) {
+            listNodeAtIndex = listNodeAtIndex.getNext();
+            if(listNodeAtIndex.getHashCode() == key.hashCode()) {
+                if(listNodeAtIndex.getKey().equals(key)) {
+                    duplicateCount++;
+                    listNodeAtIndex.setValue(value);
+                    return value;
+                }
+            }
+        }
+        listNodeAtIndex.setNext(newNode);
+        size++;
+        return value;
     }
 
     @Override

@@ -21,7 +21,7 @@ public interface MyMap<K, V> {
 
     Set<V> valueSet();
 
-    void put(K key, V value);
+    V put(K key, V value);
 
     void remove(Object key);
 

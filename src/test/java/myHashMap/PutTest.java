@@ -2,6 +2,12 @@ package myHashMap;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ThreadLocalRandom;
+
 import static org.junit.Assert.*;
 public class PutTest {
 
@@ -27,4 +33,5 @@ public class PutTest {
         map.put("Fish", "Dory");
         assertEquals(1, map.size());
     }
+
 }
