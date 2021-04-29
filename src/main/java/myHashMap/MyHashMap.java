@@ -37,10 +37,10 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         while(index <nodeList.length) {
             MyNode<K,V> listNodeAtIndex = nodeList[index];
             while(listNodeAtIndex != null) {
-                if(listNodeAtIndex.getValue() == value) {
+                if(listNodeAtIndex.value == value) {
                     return true;
                 }
-                listNodeAtIndex = listNodeAtIndex.getNext();
+                listNodeAtIndex = listNodeAtIndex.next;
             }
             index++;
         }
@@ -61,10 +61,10 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         }
         MyNode<K,V> nodeAtIndex = nodeList[index];
         while(nodeAtIndex != null) {
-            if(nodeAtIndex.getHashCode() == key.hashCode()) {
-                return nodeAtIndex.getValue();
+            if(nodeAtIndex.hashCode == key.hashCode()) {
+                return nodeAtIndex.value;
             }
-            nodeAtIndex = nodeAtIndex.getNext();
+            nodeAtIndex = nodeAtIndex.next;
         }
         return null;
     }
@@ -87,8 +87,8 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
                listNodeAtIndex = nodeList[index];
             }
             while(listNodeAtIndex != null) {
-                keySet.add(listNodeAtIndex.getKey());
-                listNodeAtIndex = listNodeAtIndex.getNext();
+                keySet.add(listNodeAtIndex.key);
+                listNodeAtIndex = listNodeAtIndex.next;
             }
             index++;
         }
@@ -110,8 +110,8 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         while(index < nodeList.length) {
             MyNode<K,V> listNodeAtIndex = nodeList[index];
             while(listNodeAtIndex != null) {
-                valueSet.add(listNodeAtIndex.getValue());
-                listNodeAtIndex = listNodeAtIndex.getNext();
+                valueSet.add(listNodeAtIndex.value);
+                listNodeAtIndex = listNodeAtIndex.next;
             }
             index++;
         }
@@ -129,31 +129,31 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
             throw new IndexOutOfBoundsException("Invalid key, please check again!");
         }
         MyNode<K, V> newNode = new MyNode<>();
-        newNode.setHashCode(hashCode);
-        newNode.setKey(key);
-        newNode.setValue(value);
+        newNode.hashCode = hashCode;
+        newNode.key = key;
+        newNode.value = value;
         if(nodeList[index] == null) {
             nodeList[index] = newNode;
             size++;
             return value;
         }
-        if(nodeList[index].getHashCode() == key.hashCode()) {
-            if(nodeList[index].getKey().equals(key)) {
-                nodeList[index].setValue(value);
+        if(nodeList[index].hashCode == key.hashCode()) {
+            if(nodeList[index].key.equals(key)) {
+                nodeList[index].value = value;
                 return value;
             }
         }
         MyNode<K,V> listNodeAtIndex = nodeList[index];
-        while(listNodeAtIndex.getNext() != null) {
-            listNodeAtIndex = listNodeAtIndex.getNext();
-            if(listNodeAtIndex.getHashCode() == key.hashCode()) {
-                if(listNodeAtIndex.getKey().equals(key)) {
-                    listNodeAtIndex.setValue(value);
+        while(listNodeAtIndex.next != null) {
+            listNodeAtIndex = listNodeAtIndex.next;
+            if(listNodeAtIndex.hashCode == key.hashCode()) {
+                if(listNodeAtIndex.key.equals(key)) {
+                    listNodeAtIndex.value = value;
                     return value;
                 }
             }
         }
-        listNodeAtIndex.setNext(newNode);
+        listNodeAtIndex.next = newNode;
         size++;
         return value;
     }
@@ -171,27 +171,26 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
        if(nodeAtIndex == null) {
            throw new NoSuchElementException("Element doesn't exist in map, nothing to remove");
        }
-
        MyNode<K,V> previous = null;
        while(nodeAtIndex != null) {
-           if(nodeAtIndex.getHashCode() == key.hashCode()) {
+           if(nodeAtIndex.hashCode == key.hashCode()) {
                break;
            }
            previous = nodeAtIndex;
-           nodeAtIndex = nodeAtIndex.getNext();
+           nodeAtIndex = nodeAtIndex.next;
        }
        if(previous == null) {
-           V valueOfRemovedKey = nodeList[index].getValue();
-          MyNode<K,V> node = nodeList[index].getNext();
+           V valueOfRemovedKey = nodeList[index].value;
+          MyNode<K,V> node = nodeList[index].next;
           nodeList[index] = node;
           size--;
           return valueOfRemovedKey;
        }
-       MyNode<K,V> next = nodeAtIndex.getNext();
-       previous.setNext(next);
-       nodeAtIndex.setNext(null);
+       MyNode<K,V> next = nodeAtIndex.next;
+       previous.next = next;
+       nodeAtIndex.next = null;
        size--;
-       return nodeAtIndex.getValue();
+       return nodeAtIndex.value;
     }
 
     private int getIndex(long hashCode, int size) {
@@ -213,21 +212,21 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
             }
             listNodeFromOldIndex = nodeList[indexOfOldMap];
             while(listNodeFromOldIndex != null) {
-                newIndexPosition = getIndex(listNodeFromOldIndex.getHashCode(), newIndexSize);
+                newIndexPosition = getIndex(listNodeFromOldIndex.hashCode, newIndexSize);
                 MyNode<K,V> movedNode = new MyNode<>();
-                movedNode.setValue(listNodeFromOldIndex.getValue());
-                movedNode.setHashCode(listNodeFromOldIndex.getHashCode());
-                movedNode.setKey(listNodeFromOldIndex.getKey());
+                movedNode.value = listNodeFromOldIndex.value;
+                movedNode.hashCode = listNodeFromOldIndex.hashCode;
+                movedNode.key = listNodeFromOldIndex.key;
                 if(newNodeList[newIndexPosition] == null) {
                     newNodeList[newIndexPosition] = movedNode;
                 } else {
                     listNodeFromNewIndex = newNodeList[newIndexPosition];
-                    while(listNodeFromNewIndex.getNext() != null) {
-                        listNodeFromNewIndex = listNodeFromNewIndex.getNext();
+                    while(listNodeFromNewIndex.next != null) {
+                        listNodeFromNewIndex = listNodeFromNewIndex.next;
                     }
-                    listNodeFromNewIndex.setNext(movedNode);
+                    listNodeFromNewIndex.next = movedNode;
                 }
-                listNodeFromOldIndex = listNodeFromOldIndex.getNext();
+                listNodeFromOldIndex = listNodeFromOldIndex.next;
             }
             indexOfOldMap++;
         }
@@ -238,5 +237,14 @@ public class MyHashMap<K, V> implements MyMap<K, V> {
         nodeList = new MyNode[nodeList.length];
         size = 0;
         capacity = (int) (nodeList.length * 0.75);
+    }
+
+    private class MyNode<K, V> {
+
+        private K key;
+        private V value;
+        private MyNode<K, V> next;
+        private long hashCode;
+
     }
 }
